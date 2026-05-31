@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><!-- 活动标题 --></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- P0修复：加载正确字体 Cormorant Garamond + Noto Serif SC，去掉 Fraunces/Caveat/Noto Sans SC -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* === CSS变量 — Eva Design System === */
+    /* P0修复：色彩系统全部替换为 brand-dna.md 标准 */
+    :root {
+      --bg:         #F5F4F0;
+      --bg-deep:    #E8E6E0;
+      --bg-deeper:  #DDDAD3;
+      --bg-dark:    #2C2C28;
+      --green:      #8A9E92;
+      --green-deep: #5E7A6A;
+      --gold:       #C4A882;
+      --sand:       #BEB5A2;
+      --ink:        #2E2820;
+      --ink-mid:    #4e4840;
+      --ink-light:  #A09688;
+      --font-en:    'Cormorant Garamond', Georgia, serif;
+      --font-cn:    'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+      /* 合作品牌色（按需启用） */
+      /* --partner: #F1752D; */
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* P0修复：正文字体改为衬线，标题正文统一 */
+    body {
+      font-family: var(--font-cn);
+      font-size: 16px;
+      line-height: 1.7;
+      font-weight: 300;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    /* P0修复：selection 颜色换成 brand-dna 规定值 */
+    ::selection {
+      background: #C8D4CA;
+      color: #2E2820;
+    }
+
+    /* P2加分：skip link 无障碍 */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      background: var(--ink);
+      color: var(--bg);
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      z-index: 9999;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 clamp(40px, 8vw, 120px);
+    }
+
+    /* === HERO === */
+    /* P1修复：min-height 100dvh；P1修复：左对齐，去掉全居中 */
+    .hero {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: clamp(80px, 12vh, 160px) clamp(40px, 8vw, 120px);
+      position: relative;
+    }
+
+    .hero .label-caps {
+      font-family: var(--font-cn);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-weight: 400;
+      color: var(--green);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    /* P0修复：字重 600，英文用 Cormorant Garamond */
+    .hero h1 {
+      font-family: var(--font-en);
+      font-weight: 600;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: 1.1;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      max-width: 800px;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      font-weight: 300;
+      color: var(--ink-mid);
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: var(--ink-mid);
+      max-width: 520px;
+      line-height: 1.8;
+    }
+
+    /* === Section 通用 === */
+    .section { padding: clamp(80px, 12vh, 160px) 0; }
+    .section--alt { background: var(--bg-deep); }
+
+    .section-header {
+      margin-bottom: clamp(40px, 6vw, 80px);
+    }
+
+    /* P0修复：section-number 用暖金，用 Cormorant italic */
+    .section-number {
+      font-family: var(--font-en);
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      color: var(--gold);
+      opacity: 0.6;
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .section-title {
+      font-family: var(--font-en);
+      font-weight: 600;
+      font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+      color: var(--ink);
+    }
+
+    /* === 三栏卡片 === */
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(20px, 2.5vw, 32px);
+    }
+
+    /* P1修复：圆角改小；P1修复：去掉 box-shadow，改用细线边框 */
+    .chair-card {
+      background: var(--bg);
+      border-radius: 8px;
+      border: 0.5px solid var(--bg-deeper);
+      padding: clamp(24px, 3vw, 40px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* 顶部 accent 线，改用品牌色 */
+    .chair-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .chair-card:nth-child(1)::before { background: var(--green); }
+    .chair-card:nth-child(2)::before { background: var(--gold); }
+    .chair-card:nth-child(3)::before { background: var(--sand); }
+
+    .chair-card-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--green);
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .chair-card h3 {
+      font-family: var(--font-en);
+      font-weight: 600;
+      font-size: 1.2rem;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+    }
+
+    .chair-card p {
+      font-size: 0.9rem;
+      color: var(--ink-mid);
+      line-height: 1.7;
+    }
+
+    /* === 深色面板 === */
+    /* P0修复：背景改为 #2C2C28（暖意近黑） */
+    .dark-section {
+      background: var(--bg-dark);
+      color: #F0EDE6;
+      padding: clamp(80px, 12vh, 160px) 0;
+    }
+
+    .dark-section .quote-text {
+      font-family: var(--font-en);
+      font-weight: 300;
+      font-size: clamp(1.4rem, 3vw, 2.2rem);
+      font-style: italic;
+      line-height: 1.7;
+      max-width: 760px;
+      color: #F0EDE6;
+    }
+
+    .dark-section .quote-text em {
+      font-style: normal;
+      color: var(--gold);
+    }
+
+    .dark-section .quote-eyebrow {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--green);
+      margin-bottom: 1.5rem;
+      display: block;
+    }
+
+    /* === Pull Quote === */
+    /* P1修复：圆角改小，边框改烟绿细线 1px */
+    .viral-pullquote {
+      padding: 36px 40px;
+      background: var(--bg);
+      border-radius: 4px;
+      border-left: 2px solid var(--gold);
+      position: relative;
+      max-width: 720px;
+    }
+
+    .viral-pullquote p {
+      font-family: var(--font-en);
+      font-size: clamp(1.1rem, 2vw, 1.5rem);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.8;
+      color: var(--ink);
+    }
+
+    .viral-pullquote .quote-source {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--ink-light);
+      margin-top: 1rem;
+      display: block;
+    }
+
+    /* === CTA === */
+    .cta-section {
+      padding: clamp(80px, 12vh, 160px) 0;
+    }
+
+    .cta-section h2 {
+      font-family: var(--font-en);
+      font-weight: 600;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--ink);
+      margin-bottom: 1rem;
+      max-width: 640px;
+    }
+
+    .cta-section p {
+      font-size: 1rem;
+      color: var(--ink-mid);
+      margin-bottom: 2.5rem;
+      max-width: 480px;
+    }
+
+    /* P1修复：去掉 box-shadow 动效，只用 transform；改为烟绿底色 */
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: var(--ink);
+      color: var(--bg);
+      border-radius: 2px;
+      text-decoration: none;
+      font-family: var(--font-cn);
+      font-weight: 400;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+                  opacity 0.2s ease;
+      will-change: transform;
+    }
+    .cta-button:hover {
+      transform: translateY(-2px);
+      opacity: 0.85;
+    }
+    .cta-button:active {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* 次级按钮（可选） */
+    .cta-button--ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 0.5px solid var(--bg-deeper);
+      margin-left: 1rem;
+    }
+    .cta-button--ghost:hover {
+      border-color: var(--green);
+      color: var(--green-deep);
+      opacity: 1;
+    }
+
+    /* === Scroll Reveal === */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+
+    /* P2加分：尊重 prefers-reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
+    }
+
+    /* === 分隔线 === */
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--sand);
+      margin: 2rem 0;
+    }
+
+    /* === 响应式 === */
+    /* P2加分：补充 768px 断点 */
+    @media (max-width: 900px) {
+      .hero { min-height: auto; padding: 5rem 1.5rem; }
+      .three-col { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .three-col { grid-template-columns: 1fr; }
+      .viral-pullquote { padding: 24px 28px; }
+      .cta-button--ghost { margin-left: 0; margin-top: 0.75rem; }
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 15px; }
+      .cta-button { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- P2加分：skip link 无障碍 -->
+  <a class="skip-link" href="#main">跳至主要内容</a>
+
+  <!-- ====== HERO ====== -->
+  <!-- P1修复：左对齐，不再全居中 -->
+  <section class="hero" id="main">
+    <span class="label-caps"><!-- 活动类型 · 日期 --></span>
+    <h1><!-- 活动主标题，英文可用 <em>斜体</em> 软化 --></h1>
+    <div class="divider"></div>
+    <p><!-- 活动副标题 / 一句话描述 --></p>
+  </section>
+
+  <!-- ====== 三栏亮点 ====== -->
+  <section class="section section--alt">
+    <div class="container">
+      <div class="section-header reveal">
+        <span class="section-number">01</span>
+        <h2 class="section-title"><!-- 亮点 / 嘉宾 / 核心价值 --></h2>
+      </div>
+      <div class="three-col">
+        <div class="chair-card reveal reveal-d1">
+          <span class="chair-card-label"><!-- 标签 --></span>
+          <h3><!-- 卡片标题 --></h3>
+          <p><!-- 卡片描述 --></p>
+        </div>
+        <div class="chair-card reveal reveal-d2">
+          <span class="chair-card-label"><!-- 标签 --></span>
+          <h3><!-- 卡片标题 --></h3>
+          <p><!-- 卡片描述 --></p>
+        </div>
+        <div class="chair-card reveal reveal-d3">
+          <span class="chair-card-label"><!-- 标签 --></span>
+          <h3><!-- 卡片标题 --></h3>
+          <p><!-- 卡片描述 --></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 深色面板（金句 / 核心观点） ====== -->
+  <!-- P0修复：bg-dark = #2C2C28 暖意近黑 -->
+  <section class="dark-section">
+    <div class="container reveal">
+      <span class="quote-eyebrow"><!-- 来源标签 --></span>
+      <p class="quote-text"><!-- 引用内容，<em>重点词</em> 显示为暖金 --></p>
+    </div>
+  </section>
+
+  <!-- ====== Pull Quote ====== -->
+  <!-- P1修复：左边框 2px 暖金，去掉大圆角和全边框 -->
+  <section class="section">
+    <div class="container">
+      <div class="viral-pullquote reveal">
+        <p><!-- 核心金句 --></p>
+        <span class="quote-source"><!-- 来源 / 署名 --></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CTA行动区 ====== -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="reveal"><!-- 行动号召标题 --></h2>
+      <p class="reveal reveal-d1"><!-- 行动描述 --></p>
+      <div class="reveal reveal-d2">
+        <a href="#" class="cta-button"><!-- 主按钮文案 --></a>
+        <a href="#" class="cta-button cta-button--ghost"><!-- 次级按钮（可选） --></a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

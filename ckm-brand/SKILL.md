@@ -1,97 +1,70 @@
 ---
 name: ckm:brand
-description: Brand voice, visual identity, messaging frameworks, asset management, brand consistency. Activate for branded content, tone of voice, marketing assets, brand compliance, style guides.
-argument-hint: "[update|review|create] [args]"
+description: Eva Lan 的品牌规范执行层。品牌一致性检查、内容定调、素材命名、视觉审核。做任何带 Eva 品牌的内容时触发，或需要判断"这符不符合 Eva 的调性"时触发。
+argument-hint: "[check|voice|tokens] [args]"
 metadata:
-  author: claudekit
-  version: "1.0.0"
+  author: eva
+  version: "2.0.0"
 ---
 
-# Brand
+# Eva Brand
 
-Brand identity, voice, messaging, asset management, and consistency frameworks.
+Eva Lan 品牌规范的执行层。所有判断以 `../eva-design-system/brand-dna.md` 为最高权威。
 
-## When to Use
+## 品牌基础
 
-- Brand voice definition and content tone guidance
-- Visual identity standards and style guide development
-- Messaging framework creation
-- Brand consistency review and audit
-- Asset organization, naming, and approval
-- Color palette management and typography specs
+**第一步永远是**：读 `../eva-design-system/brand-dna.md`，获取当前品牌 DNA。
 
-## Quick Start
+## 双账号上下文
 
-**Inject brand context into prompts:**
-```bash
-node scripts/inject-brand-context.cjs
-node scripts/inject-brand-context.cjs --json
-```
+| 账号 | 定位 | Accent | 底色 | 签名 |
+|------|------|--------|------|------|
+| Agent架构局（公众号/B端） | 冷静专业，方法论输出 | 烟绿 `#8A9E92` | 月白 `#F5F4F0` | `Agent架构局` 或 `Eva Lan · Agent架构局` |
+| Eva·克劳得（小红书/C端） | 有温度有力量，Vibe 感 | 暖金 `#C4A882` + 深色底 | `#2C2C28` | `Eva Lan · Eva·克劳得` 或 `Eva Lan` |
 
-**Validate an asset:**
-```bash
-node scripts/validate-asset.cjs <asset-path>
-```
+## 品牌语调（Voice）
 
-**Extract/compare colors:**
-```bash
-node scripts/extract-colors.cjs --palette
-node scripts/extract-colors.cjs <image-path>
-```
+**核心气质**：温柔又冷静。不强势，但有主见；不甜腻，但有温度。
 
-## Brand Sync Workflow
+| 场景 | 语调 | 避免 |
+|------|------|------|
+| B端公众号 | 方法论视角，专业但不冷漠，有结论有依据 | PPT腔、过度术语堆砌 |
+| C端小红书 | 有力量感，说人话，接地气但不低俗 | 过度emo、刻意卖弄 |
+| 通用 | 克制、有质感、留白 | 啰嗦、堆砌、讨好感 |
 
-```bash
-# 1. Edit docs/brand-guidelines.md (or use /brand update)
-# 2. Sync to design tokens
-node scripts/sync-brand-to-tokens.cjs
-# 3. Verify
-node scripts/inject-brand-context.cjs --json | head -20
-```
+**精神锚点**：坐在人群最后，一言不发，但这个房间是她的。
 
-**Files synced:**
-- `docs/brand-guidelines.md` → Source of truth
-- `assets/design-tokens.json` → Token definitions
-- `assets/design-tokens.css` → CSS variables
+## 品牌自检三问
 
-## Subcommands
+任何内容交付前：
+1. 截图发出去，会不会被人说"又是 AI 做的"？
+2. 有没有哪里让人觉得"闹"或"腻"？
+3. 去掉所有装饰，排版本身还站得住吗？
 
-| Subcommand | Description | Reference |
-|------------|-------------|-----------|
-| `update` | Update brand identity and sync to all design systems | `references/update.md` |
+## 色彩与字体速查
 
-## References
+详见 `../eva-design-system/brand-dna.md`，核心摘要：
 
-| Topic | File |
-|-------|------|
-| Voice Framework | `references/voice-framework.md` |
-| Visual Identity | `references/visual-identity.md` |
-| Messaging | `references/messaging-framework.md` |
-| Consistency | `references/consistency-checklist.md` |
-| Guidelines Template | `references/brand-guideline-template.md` |
-| Asset Organization | `references/asset-organization.md` |
-| Color Management | `references/color-palette-management.md` |
-| Typography | `references/typography-specifications.md` |
-| Logo Usage | `references/logo-usage-rules.md` |
-| Approval Checklist | `references/approval-checklist.md` |
+**配色**：月白底 `#F5F4F0` · 烟绿 `#8A9E92` · 暖金 `#C4A882` · 深墨 `#2E2820`
 
-## Scripts
+**字体**：英文 Cormorant Garamond（衬线） · 中文 Noto Serif SC（衬线）· 标题正文都用衬线，不割裂
 
-| Script | Purpose |
-|--------|---------|
-| `scripts/inject-brand-context.cjs` | Extract brand context for prompt injection |
-| `scripts/sync-brand-to-tokens.cjs` | Sync brand-guidelines.md → design-tokens.json/css |
-| `scripts/validate-asset.cjs` | Validate asset naming, size, format |
-| `scripts/extract-colors.cjs` | Extract and compare colors against palette |
+## 一致性检查
 
-## Templates
+做完设计/内容时，对照以下核心禁忌：
 
-| Template | Purpose |
-|----------|---------|
-| `templates/brand-guidelines-starter.md` | Complete starter template for new brands |
+- ❌ 蓝紫渐变、cyan、neon、暖橙、纯黑白
+- ❌ 暖金大面积背景 / 暖金做正文颜色
+- ❌ Inter/Roboto 等无衬线做正文
+- ❌ glassmorphism、渐变文字、AI 光效
+- ❌ 所有 section 居中、千篇一律卡片网格
 
-## Routing
+完整禁忌清单见 `../eva-design-system/brand-dna.md`
 
-1. Parse subcommand from `$ARGUMENTS` (first word)
-2. Load corresponding `references/{subcommand}.md`
-3. Execute with remaining arguments
+## 子命令路由
+
+| 命令 | 说明 |
+|------|------|
+| `check` | 对照品牌规范审核素材/内容 |
+| `voice` | 调取品牌语调框架，为内容定调 |
+| `tokens` | 输出 CSS 变量速查表 |

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><!-- App标题 --></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- App型：标题用衬线，UI元素用系统 sans 作 fallback -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    /* === CSS变量 — Eva Design System === */
+    :root {
+      --bg:         #F5F4F0;
+      --bg-deep:    #E8E6E0;
+      --bg-deeper:  #DDDAD3;
+      --bg-dark:    #2C2C28;
+      --green:      #8A9E92;
+      --green-deep: #5E7A6A;
+      --gold:       #C4A882;
+      --sand:       #BEB5A2;
+      --ink:        #2E2820;
+      --ink-mid:    #4e4840;
+      --ink-light:  #A09688;
+      --font-en:    'Cormorant Garamond', Georgia, serif;
+      --font-cn:    'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+      /* App型：UI小标签可用系统 sans，但不做正文 */
+      --font-ui:    -apple-system, 'PingFang SC', 'Helvetica Neue', sans-serif;
+      --border:     rgba(46,40,32,0.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* App型：正文用衬线，UI 标签用系统字体 */
+    body {
+      font-family: var(--font-cn);
+      font-size: 15px;
+      line-height: 1.6;
+      font-weight: 300;
+      color: var(--ink);
+      background: var(--bg);
+    }
+
+    /* 修复：selection 换成 brand-dna 规定值 */
+    ::selection { background: #C8D4CA; color: #2E2820; }
+
+    /* === Fixed Header === */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      height: 56px;
+      background: rgba(245,244,240,0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 0.5px solid var(--bg-deeper);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.5rem;
+    }
+
+    /* 修复：App名称用衬线，字重 600 */
+    .app-header h1 {
+      font-family: var(--font-en);
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: 0.01em;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-btn {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      border: 0.5px solid var(--bg-deeper);
+      border-radius: 2px;
+      background: transparent;
+      color: var(--ink-mid);
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .header-btn:hover { border-color: var(--green); color: var(--green-deep); }
+    .header-btn--primary {
+      background: var(--ink);
+      color: var(--bg);
+      border-color: var(--ink);
+    }
+    .header-btn--primary:hover { opacity: 0.8; color: var(--bg); border-color: var(--ink); }
+
+    /* === Tab栏 === */
+    /* 修复：active 颜色改为烟绿，去掉蓝色 */
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      border-bottom: 0.5px solid var(--bg-deeper);
+      padding: 0 1.5rem;
+      background: var(--bg);
+      scrollbar-width: none;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+
+    .tab {
+      font-family: var(--font-ui);
+      padding: 12px 20px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: var(--ink-light);
+      border-bottom: 2px solid transparent;
+      margin-bottom: -0.5px;
+      transition: color 0.15s;
+      white-space: nowrap;
+    }
+
+    .tab.active {
+      border-bottom-color: var(--green);
+      color: var(--green-deep);
+      font-weight: 500;
+    }
+
+    .tab:hover:not(.active) { color: var(--ink); }
+
+    /* === 内容区 === */
+    .app-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    /* === 卡片网格 === */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    /* 修复：圆角减小，去掉 box-shadow，改细线边框；hover 只用 opacity */
+    .app-card {
+      background: var(--bg);
+      border-radius: 4px;
+      border: 0.5px solid var(--bg-deeper);
+      padding: 1.25rem 1.5rem;
+      cursor: pointer;
+      transition: border-color 0.15s, opacity 0.15s;
+    }
+
+    .app-card:hover {
+      border-color: var(--green);
+      opacity: 0.9;
+    }
+
+    .app-card h3 {
+      font-family: var(--font-en);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 0.4rem;
+    }
+
+    .app-card p {
+      font-size: 0.82rem;
+      color: var(--ink-mid);
+      line-height: 1.6;
+    }
+
+    /* 修复：badge 改用烟绿色系，去掉蓝色 */
+    .card-badge {
+      font-family: var(--font-ui);
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 2px;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(138,158,146,0.12);
+      color: var(--green-deep);
+      margin-bottom: 0.6rem;
+    }
+
+    /* badge 变体 */
+    .card-badge--gold {
+      background: rgba(196,168,130,0.15);
+      color: #8A6D42;
+    }
+
+    /* === Tab内容切换 === */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* === Modal === */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(46,40,32,0.5);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.active { display: flex; }
+
+    /* 修复：modal 圆角减小 */
+    .modal-content {
+      background: var(--bg);
+      border-radius: 8px;
+      border: 0.5px solid var(--bg-deeper);
+      padding: 2rem;
+      max-width: 520px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .modal-title {
+      font-family: var(--font-en);
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 1rem;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 32px; height: 32px;
+      border-radius: 2px;
+      background: transparent;
+      border: 0.5px solid var(--bg-deeper);
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--ink-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .modal-close:hover { border-color: var(--ink); color: var(--ink); }
+
+    /* === 输入框 === */
+    /* 修复：focus 颜色改为烟绿 */
+    .app-input {
+      font-family: var(--font-cn);
+      font-size: 0.9rem;
+      font-weight: 300;
+      border: 0.5px solid var(--bg-deeper);
+      border-radius: 2px;
+      padding: 10px 14px;
+      transition: border-color 0.15s;
+      background: var(--bg);
+      color: var(--ink);
+      width: 100%;
+    }
+
+    .app-input::placeholder { color: var(--ink-light); }
+
+    .app-input:focus {
+      outline: none;
+      border-color: var(--green);
+      box-shadow: 0 0 0 3px rgba(138,158,146,0.15);
+    }
+
+    /* === Empty State === */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--ink-light);
+    }
+
+    .empty-state p {
+      font-family: var(--font-en);
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+
+    /* === 响应式 === */
+    @media (max-width: 768px) {
+      .app-content { padding: 1.5rem 1rem; }
+      .card-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 600px) {
+      body { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ====== Fixed Header ====== -->
+  <header class="app-header">
+    <h1><!-- App名称 --></h1>
+    <div class="header-actions">
+      <!-- 操作按钮示例 -->
+      <button class="header-btn"><!-- 次级操作 --></button>
+      <button class="header-btn header-btn--primary"><!-- 主操作 --></button>
+    </div>
+  </header>
+
+  <!-- ====== Tab栏 ====== -->
+  <div class="tab-bar" role="tablist">
+    <button class="tab active" data-tab="tab1" role="tab" aria-selected="true"><!-- 标签1 --></button>
+    <button class="tab" data-tab="tab2" role="tab" aria-selected="false"><!-- 标签2 --></button>
+    <button class="tab" data-tab="tab3" role="tab" aria-selected="false"><!-- 标签3 --></button>
+  </div>
+
+  <!-- ====== 内容区 ====== -->
+  <main class="app-content" id="main">
+
+    <!-- Tab 1 内容 -->
+    <div class="tab-content active" id="tab1" role="tabpanel">
+      <div class="card-grid">
+        <div class="app-card">
+          <span class="card-badge"><!-- 分类 --></span>
+          <h3><!-- 卡片标题 --></h3>
+          <p><!-- 卡片描述 --></p>
+        </div>
+        <!-- 更多卡片 -->
+      </div>
+    </div>
+
+    <!-- Tab 2 内容 -->
+    <div class="tab-content" id="tab2" role="tabpanel">
+      <!-- 另一组内容 -->
+    </div>
+
+    <!-- Tab 3 内容 -->
+    <div class="tab-content" id="tab3" role="tabpanel">
+      <!-- 另一组内容，可放 empty state -->
+      <div class="empty-state">
+        <p><!-- 暂无内容的说明 --></p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ====== Modal ====== -->
+  <div class="modal-overlay" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()" aria-label="关闭">×</button>
+      <h2 class="modal-title"><!-- Modal标题 --></h2>
+      <!-- Modal内容 -->
+    </div>
+  </div>
+
+  <script>
+    // Tab切换
+    document.querySelectorAll('.tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => {
+          t.classList.remove('active');
+          t.setAttribute('aria-selected', 'false');
+        });
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+
+    // Modal
+    function openModal() {
+      document.getElementById('modal').classList.add('active');
+    }
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    // Modal 点击遮罩关闭
+    document.getElementById('modal').addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) closeModal();
+    });
+
+    // Modal ESC 关闭
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+</body>
+</html>

@@ -1,27 +1,39 @@
 ---
 name: ckm:design
-description: "Comprehensive design skill: brand identity, design tokens, UI styling, logo generation (55 styles, Gemini AI), corporate identity program (50 deliverables, CIP mockups), HTML presentations (Chart.js), banner design (22 styles, social/ads/web/print), icon design (15 styles, SVG, Gemini 3.1 Pro), social photos (HTML→screenshot, multi-platform). Actions: design logo, create CIP, generate mockups, build slides, design banner, generate icon, create social photos, social media images, brand identity, design system. Platforms: Facebook, Twitter, LinkedIn, YouTube, Instagram, Pinterest, TikTok, Threads, Google Ads."
+description: "Eva Lan 设计执行层，默认套用 eva-design-system（月白底+烟绿+衬线体）。做 logo、banner、社交图片、PPT、CIP、icon 时触发。所有输出自动继承 Eva 品牌 DNA，除非用户明确指定其他风格。Actions: design logo, create CIP, generate mockups, build slides, design banner, generate icon, create social photos, social media images, brand identity. Platforms: WeChat, Xiaohongshu, LinkedIn, Twitter/X, YouTube."
 argument-hint: "[design-type] [context]"
 license: MIT
 metadata:
-  author: claudekit
-  version: "2.1.0"
+  author: eva
+  version: "3.0.0"
 ---
 
-# Design
+# Design（Eva 版）
 
-Unified design skill: brand, tokens, UI, logo, CIP, slides, banners, social photos, icons.
+Eva Lan 设计执行层。**所有设计任务开始前，先读 `../eva-design-system/brand-dna.md`**，获取品牌 DNA 作为默认约束。
+
+## 默认品牌上下文
+
+| 属性 | 默认值 |
+|------|--------|
+| 底色 | 月白 `#F5F4F0` |
+| 主色 | 烟绿 `#8A9E92` |
+| 点缀色 | 暖金 `#C4A882` |
+| 正文色 | 深墨 `#2E2820` |
+| 英文字体 | Cormorant Garamond |
+| 中文字体 | Noto Serif SC |
+| 深色背景 | `#2C2C28`（仅打破节奏用，≤30%） |
+
+如用户提供其他品牌色/风格，以用户输入为准，忽略上述默认值。
 
 ## When to Use
 
-- Brand identity, voice, assets
-- Design system tokens and specs
-- UI styling with shadcn/ui + Tailwind
-- Logo design and AI generation
-- Corporate identity program (CIP) deliverables
-- Presentations and pitch decks
-- Banner design for social media, ads, web, print
-- Social photos for Instagram, Facebook, LinkedIn, Twitter, Pinterest, TikTok
+- Logo 设计与 AI 生成
+- Corporate Identity Program（CIP）全套物料
+- 演示文稿 / Pitch Deck
+- Banner：公众号封面、社交媒体头图、广告图
+- 社交图片：小红书封面、X 配图、LinkedIn 图
+- SVG icon 设计
 
 ## Sub-skill Routing
 
@@ -143,30 +155,30 @@ Load `references/banner-sizes-and-styles.md` for complete sizes and styles refer
 4. **Export** — Screenshot to PNG at exact dimensions via `chrome-devtools`
 5. **Present** — Show all options side-by-side, iterate on feedback
 
-### Banner: Quick Size Reference
+### Banner: Eva 常用尺寸
 
-| Platform | Type | Size (px) |
-|----------|------|-----------|
-| Facebook | Cover | 820 x 312 |
-| Twitter/X | Header | 1500 x 500 |
-| LinkedIn | Personal | 1584 x 396 |
-| YouTube | Channel art | 2560 x 1440 |
-| Instagram | Story | 1080 x 1920 |
-| Instagram | Post | 1080 x 1080 |
-| Google Ads | Med Rectangle | 300 x 250 |
-| Website | Hero | 1920 x 600-1080 |
+| 平台 | 类型 | 尺寸 (px) |
+|------|------|-----------|
+| 微信公众号 | 封面首图 | 900 x 383 |
+| 微信公众号 | 次图/方图 | 500 x 500 |
+| 小红书 | 封面竖图 | 1080 x 1350 |
+| 小红书 | 图文卡片 | 1080 x 1440（3:4） |
+| Twitter/X | 配图 | 1200 x 675 |
+| Twitter/X | 头图 | 1500 x 500 |
+| LinkedIn | 配图 | 1200 x 627 |
+| YouTube | 封面 | 1280 x 720 |
+| 网站 | Hero | 1920 x 600–1080 |
 
-### Banner: Top Art Styles
+### Banner: Eva 风格优先级
 
-| Style | Best For |
-|-------|----------|
-| Minimalist | SaaS, tech |
-| Bold Typography | Announcements |
-| Gradient | Modern brands |
-| Photo-Based | Lifestyle, e-com |
-| Geometric | Tech, fintech |
-| Glassmorphism | SaaS, apps |
-| Neon/Cyberpunk | Gaming, events |
+| 风格 | 适用场景 | 说明 |
+|------|----------|------|
+| 衬线大字留白 | 公众号封面、观点型内容 | Eva 首选，气质最匹配 |
+| 深色底+暖金 | 小红书 C 端、有力量感内容 | `#2C2C28` 底，暖金点缀 |
+| 月白极简 | 方法论、教程、工具类 | 烟绿 accent，零装饰 |
+| 信息密度型 | 数据、对比、清单类 | 结构清晰优先，装饰最少 |
+
+**⚠️ Eva 品牌禁用**：glassmorphism、渐变文字、neon、蓝紫渐变、AI 光效
 
 ### Banner: Design Rules
 
@@ -231,14 +243,16 @@ Load `references/social-photos-design.md` for sizes, templates, best practices.
 7. **Report** — Summary to `plans/reports/` with design decisions
 8. **Organize** — Invoke `assets-organizing` skill to sort output files and reports
 
-### Social Photos: Key Sizes
+### Social Photos: Eva 常用尺寸
 
-| Platform | Size (px) | Platform | Size (px) |
-|----------|-----------|----------|-----------|
-| IG Post | 1080×1080 | FB Post | 1200×630 |
-| IG Story | 1080×1920 | X Post | 1200×675 |
-| IG Carousel | 1080×1350 | LinkedIn | 1200×627 |
-| YT Thumb | 1280×720 | Pinterest | 1000×1500 |
+| 平台 | 尺寸 (px) | 账号 |
+|------|-----------|------|
+| 小红书封面 | 1080×1350 | Eva·克劳得 |
+| 小红书图文卡片 | 1080×1440 | Eva·克劳得 |
+| 公众号首图 | 900×383 | Agent架构局 |
+| X/Twitter 配图 | 1200×675 | Eva Lan |
+| LinkedIn 配图 | 1200×627 | Eva Lan |
+| YouTube 封面 | 1280×720 | — |
 
 ## Workflows
 

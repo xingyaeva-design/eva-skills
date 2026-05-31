@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>图文卡片 - Eva Lan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- 修复：Cormorant Garamond + Noto Serif SC，去掉 Fraunces/Noto Sans SC -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+SC:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="html2canvas.min.js" onerror="console.error('html2canvas failed to load')"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+/* ===== Eva Design System 变量 =====
+   双账号模式：
+   - Eva·克劳得（小红书 C端）→ 深色底 #2C2C28 + 暖金 accent（默认）
+   - Agent架构局（B端公众号） → 月白底 #F5F4F0 + 烟绿 accent
+   切换账号：在 .cards-container 上加 class="mode-b2b" 即可
+*/
+:root {
+  --bg:         #F5F4F0;
+  --bg-deep:    #E8E6E0;
+  --bg-deeper:  #DDDAD3;
+  --bg-dark:    #2C2C28;
+  --green:      #8A9E92;
+  --green-deep: #5E7A6A;
+  --gold:       #C4A882;
+  --sand:       #BEB5A2;
+  --ink:        #2E2820;
+  --ink-mid:    #4e4840;
+  --ink-light:  #A09688;
+  --font-en:    'Cormorant Garamond', Georgia, serif;
+  --font-cn:    'Noto Serif SC', 'Songti SC', 'SimSun', serif;
+  /* 深色场景文字 */
+  --dark-text:  #F0EDE6;
+  --dark-muted: rgba(240,237,230,0.5);
+}
+
+/* C端默认：deep background canvas */
+body {
+  background: #DDDAD3;
+  font-family: var(--font-cn);
+  color: var(--ink);
+  padding: 60px 20px 40px;
+}
+
+/* ========== 导出栏 ========== */
+.export-bar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 9999;
+  background: var(--bg-dark);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  border-bottom: 0.5px solid rgba(190,181,162,0.2);
+}
+
+/* 修复：导出按钮换成 Eva 风格 */
+.export-bar button {
+  background: var(--gold);
+  color: var(--ink);
+  border: none;
+  padding: 9px 28px;
+  border-radius: 2px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-cn);
+  letter-spacing: 0.04em;
+  transition: opacity 0.15s;
+}
+.export-bar button:hover { opacity: 0.85; }
+.export-bar button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.export-bar .hint {
+  color: var(--sand);
+  font-size: 12px;
+  font-family: var(--font-cn);
+  letter-spacing: 0.04em;
+}
+
+/* ========== 账号切换提示 ========== */
+.mode-hint {
+  color: rgba(190,181,162,0.6);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ========== 卡片容器 ========== */
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+  margin-top: 24px;
+}
+
+/* 卡片尺寸：1080×1440（3:4），缩放预览 */
+.card {
+  width: 1080px;
+  height: 1440px;
+  position: relative;
+  overflow: hidden;
+  transform: scale(0.45);
+  transform-origin: top center;
+  margin-bottom: -792px;
+  border-radius: 4px;
+}
+
+/* ===================================================================
+   C端风格（默认）— Eva·克劳得 · 小红书
+   深色底 #2C2C28 + 暖金 accent
+   =================================================================== */
+
+/* ========== P1 封面 — C端 ========== */
+/* 大标题留白型，字要大，留白多，悬念感 */
+.p-cover {
+  background: var(--bg-dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 80px 90px;
+}
+
+/* 修复：顶部 accent 改为单色细线，去掉渐变 */
+.p-cover .deco-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gold);
+}
+
+.p-cover .eyebrow {
+  font-family: var(--font-cn);
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 40px;
+  margin-top: 16px;
+}
+
+/* 修复：标题字重 600，英文用 Cormorant */
+.p-cover h1 {
+  font-family: var(--font-cn);
+  font-weight: 500;
+  font-size: 96px;
+  line-height: 1.15;
+  color: var(--dark-text);
+  margin-bottom: 32px;
+  flex: 1;
+}
+
+.p-cover h1 em {
+  font-style: normal;
+  color: var(--gold);
+}
+
+.p-cover .subtitle {
+  font-size: 36px;
+  color: var(--dark-muted);
+  font-weight: 300;
+  line-height: 1.7;
+  margin-bottom: 60px;
+}
+
+/* 修复：署名区，按 brand-dna 规范 */
+.p-cover .sig {
+  font-family: var(--font-cn);
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+/* B端署名变体：
+   .p-cover .sig.b2b { color: var(--green); }
+*/
+
+/* ========== P2 深色列表页 ========== */
+/* 适合核心要点/观点强调，每张1个核心结论 */
+.p-content-dark {
+  background: var(--bg-dark);
+  display: flex;
+  flex-direction: column;
+  padding: 80px 80px;
+}
+
+/* 修复：页码用 Cormorant italic + 暖金，去掉 Fraunces */
+.p-content-dark .page-num {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 120px;
+  color: var(--gold);
+  opacity: 0.12;
+  position: absolute;
+  top: 40px; right: 80px;
+  line-height: 1;
+}
+
+.p-content-dark h2 {
+  font-family: var(--font-cn);
+  font-weight: 500;
+  font-size: 56px;
+  color: var(--dark-text);
+  margin-bottom: 16px;
+  line-height: 1.3;
+}
+
+.p-content-dark .sub {
+  font-size: 30px;
+  color: var(--gold);
+  margin-bottom: 60px;
+  font-weight: 300;
+}
+
+.p-content-dark .items {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 40px;
+}
+
+.p-content-dark .item {
+  display: flex;
+  align-items: flex-start;
+  gap: 28px;
+}
+
+/* 修复：编号用暖金数字替代 emoji */
+.p-content-dark .item .num {
+  font-family: var(--font-en);
+  font-size: 40px;
+  font-weight: 300;
+  color: var(--gold);
+  flex-shrink: 0;
+  width: 48px;
+  line-height: 1.3;
+}
+
+.p-content-dark .item .text {
+  font-family: var(--font-cn);
+  font-size: 38px;
+  color: var(--dark-text);
+  line-height: 1.5;
+  font-weight: 300;
+}
+
+.p-content-dark .item .text strong {
+  color: #fff;
+  font-weight: 500;
+}
+
+/* 修复：底部装饰线改单色，去掉渐变 */
+.p-content-dark .deco-line {
+  position: absolute;
+  bottom: 80px; left: 80px; right: 80px;
+  height: 1px;
+  background: rgba(190,181,162,0.2);
+}
+
+/* ========== P3 浅色内容页 ========== */
+/* 月白底，适合方法论/步骤/对比 */
+.p-content-light {
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  padding: 80px 80px;
+}
+
+.p-content-light .page-num {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 120px;
+  color: var(--sand);
+  opacity: 0.2;
+  position: absolute;
+  top: 40px; right: 80px;
+  line-height: 1;
+}
+
+.p-content-light h2 {
+  font-family: var(--font-cn);
+  font-weight: 500;
+  font-size: 56px;
+  color: var(--ink);
+  margin-bottom: 20px;
+  line-height: 1.3;
+}
+
+/* 修复：标题下划线改为暖金细线，去掉黄色粗线 */
+.p-content-light .title-line {
+  width: 60px;
+  height: 2px;
+  background: var(--gold);
+  margin-bottom: 48px;
+}
+
+.p-content-light .content-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+}
+
+/* 步骤条目 */
+.p-content-light .step {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.p-content-light .step .step-num {
+  font-family: var(--font-en);
+  font-size: 36px;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--gold);
+  flex-shrink: 0;
+  width: 52px;
+  line-height: 1.4;
+}
+
+.p-content-light .step .step-body h3 {
+  font-family: var(--font-cn);
+  font-size: 38px;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.p-content-light .step .step-body p {
+  font-size: 30px;
+  color: var(--ink-mid);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+/* 署名（左下角） */
+.card-sig {
+  position: absolute;
+  bottom: 48px; left: 80px;
+  font-family: var(--font-cn);
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--green);  /* 浅色页用烟绿 */
+}
+
+.p-content-dark .card-sig {
+  color: var(--gold);  /* 深色页用暖金 */
+}
+
+/* ========== 尾页 ========== */
+/* 金句+署名+引导 */
+.p-end {
+  background: var(--bg-dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 90px;
+}
+
+/* 修复：底部 accent 改单色，去掉渐变 */
+.p-end .deco-bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gold);
+}
+
+/* 装饰引号，用 Cormorant */
+.p-end .quote-mark {
+  font-family: var(--font-en);
+  font-style: italic;
+  font-weight: 300;
+  font-size: 200px;
+  color: var(--gold);
+  opacity: 0.12;
+  line-height: 0.7;
+  margin-bottom: 16px;
+}
+
+.p-end .quote {
+  font-family: var(--font-cn);
+  font-weight: 500;
+  font-size: 64px;
+  line-height: 1.5;
+  color: var(--dark-text);
+  margin-bottom: 64px;
+  max-width: 900px;
+}
+
+.p-end .quote em {
+  font-style: normal;
+  color: var(--gold);
+}
+
+.p-end .divider {
+  width: 40px;
+  height: 1px;
+  background: rgba(190,181,162,0.3);
+  margin-bottom: 40px;
+}
+
+.p-end .author-block {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.p-end .avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* 修复：头像边框改用暖金，去掉黄色 */
+  border: 2px solid var(--gold);
+}
+
+.p-end .author-info {}
+
+.p-end .author-name {
+  font-family: var(--font-cn);
+  font-size: 36px;
+  font-weight: 400;
+  color: var(--dark-text);
+  margin-bottom: 8px;
+}
+
+/* 修复：CTA 和 tagline 颜色换成烟绿/暖金 */
+.p-end .cta {
+  font-family: var(--font-cn);
+  font-size: 26px;
+  color: var(--green);
+  font-weight: 300;
+  letter-spacing: 0.06em;
+}
+
+.p-end .tagline {
+  position: absolute;
+  bottom: 48px; left: 90px; right: 90px;
+  font-family: var(--font-cn);
+  font-size: 22px;
+  color: var(--dark-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<div class="export-bar">
+  <button onclick="exportAll()">一键导出 PNG</button>
+  <span class="hint">每张卡片导出为 1080×1440 PNG</span>
+  <span class="mode-hint">默认：Eva·克劳得 / 小红书 C端</span>
+</div>
+
+<div class="cards-container">
+
+<!-- ===== P1 封面 =====
+  大标题 + 悬念感，字要大，留白要多
+  C端（Eva·克劳得）：深色底 + 暖金
+  B端（Agent架构局）：把 p-cover 背景改 var(--bg)，文字色改 var(--ink)，gold → green
+-->
+<div class="card p-cover" data-card="1">
+  <div class="deco-top"></div>
+  <span class="eyebrow"><!-- 分类标签，如 AI · 工具 --></span>
+  <h1><!-- 主标题，可用 <em>关键词</em> 显示暖金 --></h1>
+  <p class="subtitle"><!-- 副标题 / 一句话说明，≤20字 --></p>
+  <span class="sig">Eva Lan · Eva·克劳得</span>
+  <!-- B端署名改为：Agent架构局 或 Eva Lan · Agent架构局 -->
+</div>
+
+<!-- ===== P2 深色列表页 =====
+  核心要点/观点，每张1个核心结论 + 2-3行支撑
+-->
+<div class="card p-content-dark" data-card="2">
+  <span class="page-num">02</span>
+  <h2><!-- 页面标题 --></h2>
+  <p class="sub"><!-- 副标题/小字说明 --></p>
+  <div class="items">
+    <!-- 用数字+文字，禁止 emoji -->
+    <div class="item">
+      <span class="num">1</span>
+      <span class="text"><strong><!-- 要点标题 --></strong><!-- 说明文字 --></span>
+    </div>
+    <div class="item">
+      <span class="num">2</span>
+      <span class="text"><strong><!-- 要点标题 --></strong><!-- 说明文字 --></span>
+    </div>
+    <div class="item">
+      <span class="num">3</span>
+      <span class="text"><strong><!-- 要点标题 --></strong><!-- 说明文字 --></span>
+    </div>
+  </div>
+  <div class="deco-line"></div>
+  <span class="card-sig">Eva Lan · Eva·克劳得</span>
+</div>
+
+<!-- ===== P3 浅色内容页 =====
+  月白底，适合步骤/方法论/分点说明
+  每页布局必须与上一张不同（从 scene-cards.md 选手法）
+-->
+<div class="card p-content-light" data-card="3">
+  <span class="page-num">03</span>
+  <h2><!-- 页面标题 --></h2>
+  <div class="title-line"></div>
+  <div class="content-area">
+    <!-- 步骤示例：编号 + 标题 + 说明 -->
+    <div class="step">
+      <span class="step-num">01</span>
+      <div class="step-body">
+        <h3><!-- 步骤标题 --></h3>
+        <p><!-- 步骤说明，≤30字 --></p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="step-num">02</span>
+      <div class="step-body">
+        <h3><!-- 步骤标题 --></h3>
+        <p><!-- 步骤说明 --></p>
+      </div>
+    </div>
+    <div class="step">
+      <span class="step-num">03</span>
+      <div class="step-body">
+        <h3><!-- 步骤标题 --></h3>
+        <p><!-- 步骤说明 --></p>
+      </div>
+    </div>
+  </div>
+  <span class="card-sig">Eva Lan · Eva·克劳得</span>
+</div>
+
+<!-- ===== 最后一页 尾页 =====
+  金句 + 署名 + 引导关注
+  居中大字，留白多，收拢全篇
+-->
+<div class="card p-end" data-card="last">
+  <div class="deco-bottom"></div>
+  <div class="quote-mark">"</div>
+  <p class="quote"><!-- 核心金句，<em>关键词</em> 显示暖金 --></p>
+  <div class="divider"></div>
+  <div class="author-block">
+    <img class="avatar" src="avatar.jpg" alt="Eva Lan">
+    <div class="author-info">
+      <p class="author-name">Eva Lan</p>
+      <p class="cta">关注 Eva·克劳得</p>
+    </div>
+  </div>
+  <p class="tagline"><!-- 账号 tagline，如 AI落地 · 设计 · 个人系统 --></p>
+</div>
+
+</div><!-- cards-container -->
+
+<script>
+async function exportAll() {
+  if (typeof html2canvas === 'undefined') {
+    alert('html2canvas 正在加载，请稍等几秒后重试。');
+    return;
+  }
+  if (typeof JSZip === 'undefined') {
+    alert('JSZip 加载失败，请刷新重试。');
+    return;
+  }
+  const cards = document.querySelectorAll('.card');
+  const btn = document.querySelector('.export-bar button');
+  btn.textContent = '导出中... 0/' + cards.length;
+  btn.disabled = true;
+
+  const zip = new JSZip();
+  const folder = zip.folder('eva-cards-export');
+
+  for (let i = 0; i < cards.length; i++) {
+    const card = cards[i];
+    card.style.transform = 'none';
+    card.style.marginBottom = '0';
+    card.style.borderRadius = '0';
+
+    await new Promise(r => setTimeout(r, 150));
+
+    try {
+      const canvas = await html2canvas(card, {
+        width: 1080,
+        height: 1440,
+        scale: 1,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: null,
+        logging: false
+      });
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const base64 = dataUrl.split(',')[1];
+      folder.file(`card-${String(i + 1).padStart(2, '0')}.png`, base64, { base64: true });
+
+      btn.textContent = `导出中... ${i + 1}/${cards.length}`;
+    } catch(e) {
+      console.error('Export error on card ' + (i + 1), e);
+    } finally {
+      card.style.transform = 'scale(0.45)';
+      card.style.marginBottom = '-792px';
+      card.style.borderRadius = '4px';
+    }
+  }
+
+  btn.textContent = '打包中...';
+  const blob = await zip.generateAsync({ type: 'blob' });
+  const link = document.createElement('a');
+  link.download = 'eva-cards-export.zip';
+  link.href = URL.createObjectURL(blob);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(link.href);
+
+  btn.textContent = '导出完成';
+  setTimeout(() => { btn.textContent = '一键导出 PNG'; btn.disabled = false; }, 2000);
+}
+</script>
+
+</body>
+</html>
